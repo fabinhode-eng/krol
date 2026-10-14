@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Te Amo Carol</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(135deg, #1a080d 0%, #4a0e17 50%, #1a080d 100%);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 20px 10px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ff4d6d;
+      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      margin-top: 10px;
+    }
+
+    .heart-icon {
+      font-size: 1.5rem;
+      animation: heartbeat 1.2s infinite;
+      display: inline-block;
+      margin: 0 5px;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* Carrossel */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 77, 109, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      background-color: #000;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Indicadores */
+    .dots-container {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #ff4d6d;
+      width: 20px;
+      border-radius: 10px;
+    }
+
+    /* Player de áudio e Overlay para iOS */
+    .audio-control {
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    #start-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 5, 8, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.5s ease;
+    }
+
+    #start-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .start-btn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background: #ff4d6d;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela inicial para autorizar reprodução de áudio no iPhone -->
+  <div id="start-overlay" onclick="startExperience()">
+    <h2><span class="heart-icon">❤️</span> Para Você Carol <span class="heart-icon">❤️</span></h2>
+    <button class="start-btn">Toque para Abrir</button>
+  </div>
+
+  <div class="container">
+    <h1>TE AMO CAROL <span class="heart-icon">❤️</span></h1>
+
+    <div class="carousel-container" id="carousel">
+      <!-- As fotos foram anexadas dinamicamente via JS -->
+    </div>
+
+    <div class="dots-container" id="dots"></div>
+
+    <div class="audio-control" onclick="toggleAudio()">
+      <span id="audio-icon">🎵</span>
+      <span id="audio-status">Tocando música...</span>
+    </div>
+  </div>
+
+  <!-- Audio de fundo romântico (Licença Royalty Free) -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112181.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Imagens que você enviou
+    const images = [
+      'https://images2.imgbox.com/39/33/c0tIqH5X_o.jpeg',
+      'https://images2.imgbox.com/95/9b/J5m9XvL1_o.jpeg',
+      'https://images2.imgbox.com/bf/1d/UjL10C3z_o.jpeg',
+      'https://images2.imgbox.com/7b/39/7R8mU1Mv_o.jpeg',
+      'https://images2.imgbox.com/2a/3c/A5OqVfG7_o.jpeg',
+      'https://images2.imgbox.com/ef/3d/yU3A9xM1_o.jpeg',
+      'https://images2.imgbox.com/4a/1b/K8zX8J8A_o.jpeg',
+      'https://images2.imgbox.com/12/34/L9m8N7b6_o.jpeg'
+    ];
+
+    const carousel = document.getElementById('carousel');
+    const dotsContainer = document.getElementById('dots');
+    const audio = document.getElementById('bg-music');
+    let currentIndex = 0;
+
+    // Inicializar carrossel com as fotos enviadas
+    images.forEach((src, index) => {
+      const slide = document.createElement('div');
+      slide.classList.add('carousel-slide');
+      if (index === 0) slide.classList.add('active');
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `Foto ${index + 1}`;
+      
+      slide.appendChild(img);
+      carousel.appendChild(slide);
+
+      // Criar pontinhos
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (index === 0) dot.classList.add('active');
+      dotsContainer.appendChild(dot);
+    });
+
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function nextSlide() {
+      slides[currentIndex].classList.remove('active');
+      dots[currentIndex].classList.remove('active');
+      
+      currentIndex = (currentIndex + 1) % slides.length;
+      
+      slides[currentIndex].classList.add('active');
+      dots[currentIndex].classList.add('active');
+    }
+
+    // Passar fotos a cada 3.5 segundos
+    setInterval(nextSlide, 3500);
+
+    // Controle de Áudio no iPhone
+    function startExperience() {
+      document.getElementById('start-overlay').classList.add('hidden');
+      audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
+    }
+
+    function toggleAudio() {
+      const statusText = document.getElementById('audio-status');
+      const icon = document.getElementById('audio-icon');
+      if (audio.paused) {
+        audio.play();
+        statusText.innerText = "Tocando música...";
+        icon.innerText = "🎵";
+      } else {
+        audio.pause();
+        statusText.innerText = "Música pausada";
+        icon.innerText = "🔇";
+      }
+    }
+  </script>
+</body>
+</html>
