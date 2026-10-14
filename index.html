@@ -20,8 +20,13 @@
     }
 
     body {
-      background: linear-gradient(135deg, #1a080d 0%, #4a0e17 50%, #1a080d 100%);
-      color: #ffffff;
+      background: linear-gradient(
+        135deg,
+        #1a080d 0%,
+        #4a0e17 50%,
+        #1a080d 100%
+      );
+      color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
       min-height: 100dvh;
@@ -46,6 +51,7 @@
       z-index: 2;
     }
 
+    /* Mensagem romântica */
     h1 {
       font-family: "Dancing Script", "Brush Script MT", cursive;
       font-size: clamp(2.8rem, 10vw, 4rem);
@@ -71,7 +77,7 @@
       50% { transform: scale(1.3); }
     }
 
-    /* Carrossel de fotos */
+    /* Carrossel */
     .carousel-container {
       position: relative;
       width: 100%;
@@ -107,7 +113,7 @@
       object-fit: cover;
     }
 
-    /* Indicadores do carrossel */
+    /* Indicadores */
     .dots-container {
       display: flex;
       gap: 8px;
@@ -129,7 +135,7 @@
       border-radius: 10px;
     }
 
-    /* Botão discreto de música, sem nome da faixa */
+    /* Botão de música */
     .audio-control {
       margin-top: 2px;
       width: 48px;
@@ -140,13 +146,14 @@
       border-radius: 50%;
       border: 1px solid rgba(255, 255, 255, 0.25);
       background: rgba(255, 255, 255, 0.1);
-      color: white;
+      color: #fff;
       font-size: 1.3rem;
       cursor: pointer;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
       transition: transform 0.2s, background 0.2s;
+      position: relative;
       z-index: 3;
     }
 
@@ -195,6 +202,62 @@
       }
     }
 
+    /* Ondas geradas pelos toques */
+    .tap-wave {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 143, 163, 0.95);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      pointer-events: none;
+      z-index: 9998;
+      animation: wave-expand 0.8s ease-out forwards;
+      box-shadow: 0 0 12px rgba(255, 77, 109, 0.3);
+    }
+
+    @keyframes wave-expand {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(5);
+        opacity: 0;
+      }
+    }
+
+    /* Emojis que flutuam e desaparecem */
+    .tap-emoji {
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 30px;
+      line-height: 1;
+      animation: emoji-float-fade 1.35s ease-out forwards;
+      filter: drop-shadow(0 2px 5px rgba(255, 77, 109, 0.25));
+      will-change: transform, opacity;
+    }
+
+    @keyframes emoji-float-fade {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -35%) scale(0.35) rotate(-12deg);
+      }
+      18% {
+        opacity: 1;
+        transform: translate(-50%, -65%) scale(1.2) rotate(8deg);
+      }
+      35% {
+        transform: translate(-50%, -75%) scale(1) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -155%) scale(0.75) rotate(12deg);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .floating-heart {
         animation-duration: 20s !important;
@@ -203,118 +266,61 @@
       .carousel-slide {
         transition-duration: 0.3s;
       }
+
+      .tap-wave,
+      .tap-emoji {
+        animation-duration: 0.4s;
+      }
     }
-
-    /* Player fora da área visível */
-    #yt-player {
-      position: fixed;
-      width: 200px;
-      height: 200px;
-      left: -220px;
-      bottom: 0;
-      border: 0;
-      pointer-events: none;
-    }
-
-    
-/* Efeito de onda a cada toque */
-.tap-wave {
-  position: fixed;
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 143, 163, 0.95);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  pointer-events: none;
-  z-index: 9998;
-  animation: wave-expand 0.8s ease-out forwards;
-  box-shadow: 0 0 12px rgba(255, 77, 109, 0.3);
-}
-
-@keyframes wave-expand {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.95;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(5);
-    opacity: 0;
-  }
-}
-
-/* Emoji fofo que aparece e desaparece */
-.tap-emoji {
-  position: fixed;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9999;
-  font-size: 30px;
-  line-height: 1;
-  animation: emoji-float-fade 1.35s ease-out forwards;
-  filter: drop-shadow(0 2px 5px rgba(255, 77, 109, 0.25));
-  will-change: transform, opacity;
-}
-
-@keyframes emoji-float-fade {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -35%) scale(0.35) rotate(-12deg);
-  }
-  18% {
-    opacity: 1;
-    transform: translate(-50%, -65%) scale(1.2) rotate(8deg);
-  }
-  35% {
-    transform: translate(-50%, -75%) scale(1) rotate(0deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -155%) scale(0.75) rotate(12deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tap-wave,
-  .tap-emoji {
-    animation-duration: 0.4s;
-  }
-}
-
   </style>
 </head>
 
 <body>
 
+  <!-- Corações decorativos -->
   <div id="hearts" aria-hidden="true"></div>
 
   <main class="container">
+
     <h1>
       Te amo, Carol
       <span class="heart-icon">❤️</span>
     </h1>
 
     <div class="carousel-container" id="carousel">
-      <!-- Fotos inseridas automaticamente -->
+      <!-- As fotos são inseridas pelo JavaScript -->
     </div>
 
     <div class="dots-container" id="dots"></div>
 
+    <!-- Botão discreto, sem nome da música -->
     <button
       class="audio-control"
       id="audio-button"
       type="button"
-      onclick="toggleAudio()"
-      aria-label="Tocar ou pausar música"
+      aria-label="Tocar música"
       title="Tocar ou pausar música"
     >
       <span id="audio-icon" aria-hidden="true">🎵</span>
     </button>
+
   </main>
 
-  <div id="yt-player"></div>
+  <!-- Arquivo de áudio na mesma pasta do index.html -->
+  <audio
+    id="musica"
+    src="planos.mp3"
+    autoplay
+    loop
+    preload="auto"
+    playsinline
+  ></audio>
 
   <script>
-    // Fotos na mesma pasta do index.html
+    // ==========================================
+    // 1. FOTOS DO CARROSSEL
+    // ==========================================
+
     const images = [
       'foto1.JPG',
       'foto2.JPG',
@@ -326,7 +332,6 @@
       'foto8.HEIC'
     ];
 
-    // CARROSSEL
     const carousel = document.getElementById('carousel');
     const dotsContainer = document.getElementById('dots');
 
@@ -375,19 +380,29 @@
       dots[currentIndex].classList.add('active');
     }
 
+    // Troca a foto a cada 3,5 segundos.
     setInterval(nextSlide, 3500);
 
-    // CORAÇÕES FLUTUANTES
-    const heartsContainer = document.getElementById('hearts');
-    const heartSymbols = ['❤️', '💗', '💕', '💖', '♥'];
 
-    // Mais corações distribuídos pela tela
+    // ==========================================
+    // 2. CORAÇÕES FLUTUANTES
+    // ==========================================
+
+    const heartsContainer = document.getElementById('hearts');
+
+    const heartSymbols = [
+      '❤️', '💗', '💕', '💖', '♥', '💘', '💓'
+    ];
+
     for (let i = 0; i < 32; i++) {
       const heart = document.createElement('span');
 
       heart.className = 'floating-heart';
+
       heart.textContent =
-        heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        heartSymbols[
+          Math.floor(Math.random() * heartSymbols.length)
+        ];
 
       heart.style.left = `${Math.random() * 100}%`;
       heart.style.fontSize = `${12 + Math.random() * 22}px`;
@@ -397,142 +412,165 @@
       heartsContainer.appendChild(heart);
     }
 
-    // MÚSICA: BK' - PLANOS
-    // ID correto: dnKzIagMess
-    let player = null;
-    let isPlaying = false;
-    let playerReady = false;
 
-    const audioIcon = document.getElementById('audio-icon');
+    // ==========================================
+    // 3. MÚSICA LOCAL MP3
+    // ==========================================
+
+    const musica = document.getElementById('musica');
     const audioButton = document.getElementById('audio-button');
+    const audioIcon = document.getElementById('audio-icon');
+
+    let isPlaying = false;
 
     function updateAudioButton(playing) {
       isPlaying = playing;
+
       audioIcon.textContent = playing ? '🎵' : '🔇';
 
       audioButton.setAttribute(
         'aria-label',
         playing ? 'Pausar música' : 'Tocar música'
       );
-
-      audioButton.title = playing ? 'Pausar música' : 'Tocar música';
     }
 
-    // A API do YouTube chama esta função quando estiver pronta.
-    window.onYouTubeIframeAPIReady = function () {
-      player = new YT.Player('yt-player', {
-        width: '200',
-        height: '200',
-        videoId: 'dnKzIagMess',
+    // Atualiza o botão conforme o estado real do áudio.
+    musica.addEventListener('play', () => {
+      updateAudioButton(true);
+    });
 
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          playsinline: 1,
-          loop: 1,
-          playlist: 'dnKzIagMess',
-          enablejsapi: 1
-        },
+    musica.addEventListener('pause', () => {
+      updateAudioButton(false);
+    });
 
-        events: {
-          onReady: function (event) {
-            playerReady = true;
+    musica.addEventListener('ended', () => {
+      updateAudioButton(false);
+    });
 
-            // Tenta iniciar automaticamente com som.
-            // O navegador pode bloquear a reprodução com som.
-            event.target.playVideo();
-          },
-
-          onStateChange: function (event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-              updateAudioButton(true);
-            } else if (
-              event.data === YT.PlayerState.PAUSED ||
-              event.data === YT.PlayerState.ENDED
-            ) {
-              updateAudioButton(false);
-            }
-          },
-
-          onError: function () {
-            updateAudioButton(false);
-          }
-        }
-      });
-    };
-
-    function toggleAudio() {
-      if (!playerReady || !player) return;
-
-      // O toque no botão é uma interação do usuário,
-      // permitindo tentar iniciar o áudio novamente.
-      if (isPlaying) {
-        player.pauseVideo();
-        updateAudioButton(false);
-      } else {
-        player.playVideo();
+    // Tenta tocar automaticamente ao abrir a página.
+    function tentarReproducaoAutomatica() {
+      musica.play().then(() => {
         updateAudioButton(true);
-      }
+      }).catch(() => {
+        // O Safari pode bloquear o autoplay com som.
+        // A música será tentada novamente no primeiro toque.
+        updateAudioButton(false);
+      });
     }
 
-    // Carrega a API oficial do YouTube.
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    tag.async = true;
+    // Tenta assim que o documento é carregado.
+    tentarReproducaoAutomatica();
 
-    document.head.appendChild(tag);
-    
-// EFEITOS INTERATIVOS EM TODA A TELA
-const cuteEmojis = [
-  '🥰', '💗', '💖', '😘', '🐻',
-  '💕', '🌸', '🐱', '🫶', '❤️',
-  '✨', '💋', '🌷'
-];
+    // Se o navegador bloquear, tenta novamente no primeiro toque.
+    // O listener é removido depois que a reprodução começa.
+    function iniciarMusicaNoToque() {
+      if (!musica.paused) return;
 
-let lastEffectTime = 0;
+      musica.play().then(() => {
+        updateAudioButton(true);
+        document.removeEventListener(
+          'pointerdown',
+          iniciarMusicaNoToque
+        );
+      }).catch(() => {
+        // Se ainda falhar, o botão de música continua disponível.
+      });
+    }
 
-function createTapEffect(x, y) {
-  // Evita excesso de animações em toques muito rápidos.
-  const now = performance.now();
+    document.addEventListener(
+      'pointerdown',
+      iniciarMusicaNoToque,
+      { passive: true }
+    );
 
-  if (now - lastEffectTime < 65) return;
-  lastEffectTime = now;
+    // O botão permite pausar ou iniciar manualmente.
+    audioButton.addEventListener('click', () => {
+      if (musica.paused) {
+        musica.play().then(() => {
+          updateAudioButton(true);
 
-  // Onda circular
-  const wave = document.createElement('span');
-  wave.className = 'tap-wave';
-  wave.style.left = `${x}px`;
-  wave.style.top = `${y}px`;
-  document.body.appendChild(wave);
+          document.removeEventListener(
+            'pointerdown',
+            iniciarMusicaNoToque
+          );
+        }).catch(() => {
+          updateAudioButton(false);
+        });
+      } else {
+        musica.pause();
+        updateAudioButton(false);
+      }
+    });
 
-  wave.addEventListener('animationend', () => {
-    wave.remove();
-  }, { once: true });
 
-  // Emoji fofo
-  const emoji = document.createElement('span');
-  emoji.className = 'tap-emoji';
-  emoji.textContent =
-    cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
+    // ==========================================
+    // 4. ONDA E EMOJI EM CADA TOQUE
+    // ==========================================
 
-  // Pequeno deslocamento aleatório
-  emoji.style.left = `${x + (Math.random() * 24 - 12)}px`;
-  emoji.style.top = `${y + (Math.random() * 16 - 8)}px`;
+    const cuteEmojis = [
+      '🥰', '💗', '💖', '😘', '🐻',
+      '💕', '🌸', '🐱', '🫶', '❤️',
+      '✨', '💋', '🌷'
+    ];
 
-  document.body.appendChild(emoji);
+    let lastEffectTime = 0;
 
-  emoji.addEventListener('animationend', () => {
-    emoji.remove();
-  }, { once: true });
-}
+    function createTapEffect(x, y) {
+      const now = performance.now();
 
-// Funciona em telas sensíveis ao toque e com mouse.
-document.addEventListener('pointerdown', (event) => {
-  // Ignora cliques secundários do mouse.
-  if (event.pointerType === 'mouse' && event.button !== 0) return;
+      // Limita apenas toques extremamente rápidos.
+      if (now - lastEffectTime < 65) return;
 
-  createTapEffect(event.clientX, event.clientY);
-}, { passive: true });
+      lastEffectTime = now;
+
+      // Onda circular.
+      const wave = document.createElement('span');
+
+      wave.className = 'tap-wave';
+      wave.style.left = `${x}px`;
+      wave.style.top = `${y}px`;
+
+      document.body.appendChild(wave);
+
+      wave.addEventListener('animationend', () => {
+        wave.remove();
+      }, { once: true });
+
+      // Emoji aleatório.
+      const emoji = document.createElement('span');
+
+      emoji.className = 'tap-emoji';
+
+      emoji.textContent =
+        cuteEmojis[
+          Math.floor(Math.random() * cuteEmojis.length)
+        ];
+
+      emoji.style.left =
+        `${x + (Math.random() * 24 - 12)}px`;
+
+      emoji.style.top =
+        `${y + (Math.random() * 16 - 8)}px`;
+
+      document.body.appendChild(emoji);
+
+      emoji.addEventListener('animationend', () => {
+        emoji.remove();
+      }, { once: true });
+    }
+
+    // Funciona com toque no iPhone e clique no computador.
+    // Os efeitos não bloqueiam os botões nem o carrossel.
+    document.addEventListener('pointerdown', (event) => {
+      if (
+        event.pointerType === 'mouse' &&
+        event.button !== 0
+      ) {
+        return;
+      }
+
+      createTapEffect(event.clientX, event.clientY);
+    }, { passive: true });
 
   </script>
 
