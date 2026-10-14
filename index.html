@@ -215,6 +215,71 @@
       border: 0;
       pointer-events: none;
     }
+
+    
+/* Efeito de onda a cada toque */
+.tap-wave {
+  position: fixed;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 143, 163, 0.95);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 9998;
+  animation: wave-expand 0.8s ease-out forwards;
+  box-shadow: 0 0 12px rgba(255, 77, 109, 0.3);
+}
+
+@keyframes wave-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(5);
+    opacity: 0;
+  }
+}
+
+/* Emoji fofo que aparece e desaparece */
+.tap-emoji {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 30px;
+  line-height: 1;
+  animation: emoji-float-fade 1.35s ease-out forwards;
+  filter: drop-shadow(0 2px 5px rgba(255, 77, 109, 0.25));
+  will-change: transform, opacity;
+}
+
+@keyframes emoji-float-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -35%) scale(0.35) rotate(-12deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -65%) scale(1.2) rotate(8deg);
+  }
+  35% {
+    transform: translate(-50%, -75%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -155%) scale(0.75) rotate(12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-wave,
+  .tap-emoji {
+    animation-duration: 0.4s;
+  }
+}
+
   </style>
 </head>
 
@@ -416,6 +481,59 @@
     tag.async = true;
 
     document.head.appendChild(tag);
+    
+// EFEITOS INTERATIVOS EM TODA A TELA
+const cuteEmojis = [
+  '🥰', '💗', '💖', '😘', '🐻',
+  '💕', '🌸', '🐱', '🫶', '❤️',
+  '✨', '💋', '🌷'
+];
+
+let lastEffectTime = 0;
+
+function createTapEffect(x, y) {
+  // Evita excesso de animações em toques muito rápidos.
+  const now = performance.now();
+
+  if (now - lastEffectTime < 65) return;
+  lastEffectTime = now;
+
+  // Onda circular
+  const wave = document.createElement('span');
+  wave.className = 'tap-wave';
+  wave.style.left = `${x}px`;
+  wave.style.top = `${y}px`;
+  document.body.appendChild(wave);
+
+  wave.addEventListener('animationend', () => {
+    wave.remove();
+  }, { once: true });
+
+  // Emoji fofo
+  const emoji = document.createElement('span');
+  emoji.className = 'tap-emoji';
+  emoji.textContent =
+    cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
+
+  // Pequeno deslocamento aleatório
+  emoji.style.left = `${x + (Math.random() * 24 - 12)}px`;
+  emoji.style.top = `${y + (Math.random() * 16 - 8)}px`;
+
+  document.body.appendChild(emoji);
+
+  emoji.addEventListener('animationend', () => {
+    emoji.remove();
+  }, { once: true });
+}
+
+// Funciona em telas sensíveis ao toque e com mouse.
+document.addEventListener('pointerdown', (event) => {
+  // Ignora cliques secundários do mouse.
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+  createTapEffect(event.clientX, event.clientY);
+}, { passive: true });
+
   </script>
 
 </body>
