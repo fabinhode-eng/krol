@@ -160,11 +160,20 @@
       font-weight: bold;
       box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
     }
+
+    /* Player invisível do YouTube */
+    #yt-player {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Tela inicial para autorizar reprodução de áudio no iPhone -->
+  <!-- Tela inicial para liberar o áudio no iPhone/Navegadores -->
   <div id="start-overlay" onclick="startExperience()">
     <h2><span class="heart-icon">❤️</span> Para Você Carol <span class="heart-icon">❤️</span></h2>
     <button class="start-btn">Toque para Abrir</button>
@@ -174,41 +183,38 @@
     <h1>TE AMO CAROL <span class="heart-icon">❤️</span></h1>
 
     <div class="carousel-container" id="carousel">
-      <!-- As fotos foram anexadas dinamicamente via JS -->
+      <!-- As imagens da pasta local serão inseridas via JavaScript -->
     </div>
 
     <div class="dots-container" id="dots"></div>
 
     <div class="audio-control" onclick="toggleAudio()">
       <span id="audio-icon">🎵</span>
-      <span id="audio-status">Tocando música...</span>
+      <span id="audio-status">BK' - Planos</span>
     </div>
   </div>
 
-  <!-- Audio de fundo romântico (Licença Royalty Free) -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112181.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Player de Vídeo Oculto do YouTube -->
+  <div id="yt-player"></div>
 
   <script>
-    // Imagens que você enviou
+    // Nomes das fotos salvas na MESMA PASTA do index.html
     const images = [
-      'https://images2.imgbox.com/39/33/c0tIqH5X_o.jpeg',
-      'https://images2.imgbox.com/95/9b/J5m9XvL1_o.jpeg',
-      'https://images2.imgbox.com/bf/1d/UjL10C3z_o.jpeg',
-      'https://images2.imgbox.com/7b/39/7R8mU1Mv_o.jpeg',
-      'https://images2.imgbox.com/2a/3c/A5OqVfG7_o.jpeg',
-      'https://images2.imgbox.com/ef/3d/yU3A9xM1_o.jpeg',
-      'https://images2.imgbox.com/4a/1b/K8zX8J8A_o.jpeg',
-      'https://images2.imgbox.com/12/34/L9m8N7b6_o.jpeg'
+      'foto1.jpg',
+      'foto2.jpg',
+      'foto3.jpg',
+      'foto4.jpg',
+      'foto5.jpg',
+      'foto6.jpg',
+      'foto7.jpg',
+      'foto8.jpg'
     ];
 
     const carousel = document.getElementById('carousel');
     const dotsContainer = document.getElementById('dots');
-    const audio = document.getElementById('bg-music');
     let currentIndex = 0;
 
-    // Inicializar carrossel com as fotos enviadas
+    // Criar os slides do carrossel
     images.forEach((src, index) => {
       const slide = document.createElement('div');
       slide.classList.add('carousel-slide');
@@ -221,7 +227,7 @@
       slide.appendChild(img);
       carousel.appendChild(slide);
 
-      // Criar pontinhos
+      // Criar pontinhos navegadores
       const dot = document.createElement('div');
       dot.classList.add('dot');
       if (index === 0) dot.classList.add('active');
@@ -241,26 +247,56 @@
       dots[currentIndex].classList.add('active');
     }
 
-    // Passar fotos a cada 3.5 segundos
+    // Passa a foto a cada 3.5 segundos
     setInterval(nextSlide, 3500);
 
-    // Controle de Áudio no iPhone
+    // Integromos a API de áudio do YouTube para "BK - Planos"
+    let player;
+    let isPlaying = false;
+
+    // Carrega a API de Iframe do YouTube
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('yt-player', {
+        height: '0',
+        width: '0',
+        videoId: 'm8eO2E9qO9I', // ID do vídeo da música "BK' - Planos"
+        playerVars: {
+          'playsinline': 1,
+          'loop': 1,
+          'playlist': 'm8eO2E9qO9I'
+        }
+      });
+    }
+
     function startExperience() {
       document.getElementById('start-overlay').classList.add('hidden');
-      audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
+      if (player && player.playVideo) {
+        player.playVideo();
+        isPlaying = true;
+      }
     }
 
     function toggleAudio() {
       const statusText = document.getElementById('audio-status');
       const icon = document.getElementById('audio-icon');
-      if (audio.paused) {
-        audio.play();
-        statusText.innerText = "Tocando música...";
-        icon.innerText = "🎵";
-      } else {
-        audio.pause();
+
+      if (!player) return;
+
+      if (isPlaying) {
+        player.pauseVideo();
+        isPlaying = false;
         statusText.innerText = "Música pausada";
         icon.innerText = "🔇";
+      } else {
+        player.playVideo();
+        isPlaying = true;
+        statusText.innerText = "BK' - Planos";
+        icon.innerText = "🎵";
       }
     }
   </script>
