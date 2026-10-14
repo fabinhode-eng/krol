@@ -1,26 +1,37 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#300811">
   <title>Te Amo Carol</title>
+
+  <!-- Fonte romântica -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       background: linear-gradient(135deg, #1a080d 0%, #4a0e17 50%, #1a080d 100%);
       color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow-x: hidden;
-      padding: 20px 10px;
+      padding: 25px 15px;
+      position: relative;
     }
 
     .container {
@@ -31,22 +42,28 @@
       flex-direction: column;
       align-items: center;
       gap: 20px;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-family: "Dancing Script", "Brush Script MT", cursive;
+      font-size: clamp(2.8rem, 10vw, 4rem);
       font-weight: 700;
-      letter-spacing: 2px;
-      color: #ff4d6d;
-      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      letter-spacing: 1px;
+      line-height: 1.2;
+      color: #ff8fa3;
+      text-shadow:
+        0 0 10px rgba(255, 77, 109, 0.6),
+        0 0 25px rgba(255, 77, 109, 0.3);
       margin-top: 10px;
     }
 
     .heart-icon {
-      font-size: 1.5rem;
-      animation: heartbeat 1.2s infinite;
+      font-size: 1.3rem;
       display: inline-block;
-      margin: 0 5px;
+      animation: heartbeat 1.2s infinite;
+      vertical-align: middle;
     }
 
     @keyframes heartbeat {
@@ -54,22 +71,23 @@
       50% { transform: scale(1.3); }
     }
 
-    /* Carrossel */
+    /* Carrossel de fotos */
     .carousel-container {
       position: relative;
       width: 100%;
       aspect-ratio: 4 / 5;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 77, 109, 0.3);
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(255, 77, 109, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.1);
       background-color: #000;
     }
 
     .carousel-slide {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       opacity: 0;
@@ -89,7 +107,7 @@
       object-fit: cover;
     }
 
-    /* Indicadores */
+    /* Indicadores do carrossel */
     .dots-container {
       display: flex;
       gap: 8px;
@@ -106,99 +124,132 @@
     }
 
     .dot.active {
-      background-color: #ff4d6d;
+      background-color: #ff8fa3;
       width: 20px;
       border-radius: 10px;
     }
 
-    /* Player de áudio e Overlay para iOS */
+    /* Botão discreto de música, sem nome da faixa */
     .audio-control {
-      margin-top: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      padding: 10px 20px;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 2px;
+      width: 48px;
+      height: 48px;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    #start-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(15, 5, 8, 0.95);
-      backdrop-filter: blur(8px);
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1.3rem;
       cursor: pointer;
-      transition: opacity 0.5s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 3;
     }
 
-    #start-overlay.hidden {
-      opacity: 0;
+    .audio-control:active {
+      transform: scale(0.92);
+    }
+
+    .audio-control:focus-visible {
+      outline: 2px solid #ff8fa3;
+      outline-offset: 4px;
+    }
+
+    /* Corações flutuantes */
+    #hearts {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
       pointer-events: none;
+      z-index: 1;
     }
 
-    .start-btn {
-      margin-top: 20px;
-      padding: 15px 30px;
-      background: #ff4d6d;
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
-    }
-
-    /* Player invisível do YouTube */
-    #yt-player {
+    .floating-heart {
       position: absolute;
-      width: 1px;
-      height: 1px;
+      bottom: -50px;
       opacity: 0;
+      animation: float-up linear infinite;
+      will-change: transform, opacity;
+      user-select: none;
+      filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.3));
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.75;
+      }
+      80% {
+        opacity: 0.65;
+      }
+      100% {
+        transform: translate3d(35px, -115vh, 0) rotate(35deg) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating-heart {
+        animation-duration: 20s !important;
+      }
+
+      .carousel-slide {
+        transition-duration: 0.3s;
+      }
+    }
+
+    /* Player fora da área visível */
+    #yt-player {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      left: -220px;
+      bottom: 0;
+      border: 0;
       pointer-events: none;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Tela inicial para liberar o áudio no iPhone/Navegadores -->
-  <div id="start-overlay" onclick="startExperience()">
-    <h2><span class="heart-icon">❤️</span> Para Você Carol <span class="heart-icon">❤️</span></h2>
-    <button class="start-btn">Toque para Abrir</button>
-  </div>
+  <div id="hearts" aria-hidden="true"></div>
 
-  <div class="container">
-    <h1>TE AMO CAROL <span class="heart-icon">❤️</span></h1>
+  <main class="container">
+    <h1>
+      Te amo, Carol
+      <span class="heart-icon">❤️</span>
+    </h1>
 
     <div class="carousel-container" id="carousel">
-      <!-- As imagens da pasta local serão inseridas via JavaScript -->
+      <!-- Fotos inseridas automaticamente -->
     </div>
 
     <div class="dots-container" id="dots"></div>
 
-    <div class="audio-control" onclick="toggleAudio()">
-      <span id="audio-icon">🎵</span>
-      <span id="audio-status">BK' - Planos</span>
-    </div>
-  </div>
+    <button
+      class="audio-control"
+      id="audio-button"
+      type="button"
+      onclick="toggleAudio()"
+      aria-label="Tocar ou pausar música"
+      title="Tocar ou pausar música"
+    >
+      <span id="audio-icon" aria-hidden="true">🎵</span>
+    </button>
+  </main>
 
-  <!-- Player de Vídeo Oculto do YouTube -->
   <div id="yt-player"></div>
 
   <script>
-    // Nomes das fotos salvas na MESMA PASTA do index.html
+    // Fotos na mesma pasta do index.html
     const images = [
       'foto1.JPG',
       'foto2.JPG',
@@ -210,95 +261,162 @@
       'foto8.HEIC'
     ];
 
+    // CARROSSEL
     const carousel = document.getElementById('carousel');
     const dotsContainer = document.getElementById('dots');
-    let currentIndex = 0;
 
-    // Criar os slides do carrossel
+    let currentIndex = 0;
+    const slides = [];
+    const dots = [];
+
     images.forEach((src, index) => {
       const slide = document.createElement('div');
-      slide.classList.add('carousel-slide');
-      if (index === 0) slide.classList.add('active');
+      slide.className = 'carousel-slide';
+
+      if (index === 0) {
+        slide.classList.add('active');
+      }
 
       const img = document.createElement('img');
       img.src = src;
       img.alt = `Foto ${index + 1}`;
-      
+      img.loading = index < 2 ? 'eager' : 'lazy';
+      img.decoding = 'async';
+
       slide.appendChild(img);
       carousel.appendChild(slide);
+      slides.push(slide);
 
-      // Criar pontinhos navegadores
       const dot = document.createElement('div');
-      dot.classList.add('dot');
-      if (index === 0) dot.classList.add('active');
+      dot.className = 'dot';
+
+      if (index === 0) {
+        dot.classList.add('active');
+      }
+
       dotsContainer.appendChild(dot);
+      dots.push(dot);
     });
 
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.dot');
-
     function nextSlide() {
+      if (slides.length < 2) return;
+
       slides[currentIndex].classList.remove('active');
       dots[currentIndex].classList.remove('active');
-      
+
       currentIndex = (currentIndex + 1) % slides.length;
-      
+
       slides[currentIndex].classList.add('active');
       dots[currentIndex].classList.add('active');
     }
 
-    // Passa a foto a cada 3.5 segundos
     setInterval(nextSlide, 3500);
 
-    // Integromos a API de áudio do YouTube para "BK - Planos"
-    let player;
+    // CORAÇÕES FLUTUANTES
+    const heartsContainer = document.getElementById('hearts');
+    const heartSymbols = ['❤️', '💗', '💕', '💖', '♥'];
+
+    // Mais corações distribuídos pela tela
+    for (let i = 0; i < 32; i++) {
+      const heart = document.createElement('span');
+
+      heart.className = 'floating-heart';
+      heart.textContent =
+        heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+
+      heart.style.left = `${Math.random() * 100}%`;
+      heart.style.fontSize = `${12 + Math.random() * 22}px`;
+      heart.style.animationDuration = `${8 + Math.random() * 12}s`;
+      heart.style.animationDelay = `${-Math.random() * 20}s`;
+
+      heartsContainer.appendChild(heart);
+    }
+
+    // MÚSICA: BK' - PLANOS
+    // ID correto: dnKzIagMess
+    let player = null;
     let isPlaying = false;
+    let playerReady = false;
 
-    // Carrega a API de Iframe do YouTube
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    const audioIcon = document.getElementById('audio-icon');
+    const audioButton = document.getElementById('audio-button');
 
-    function onYouTubeIframeAPIReady() {
+    function updateAudioButton(playing) {
+      isPlaying = playing;
+      audioIcon.textContent = playing ? '🎵' : '🔇';
+
+      audioButton.setAttribute(
+        'aria-label',
+        playing ? 'Pausar música' : 'Tocar música'
+      );
+
+      audioButton.title = playing ? 'Pausar música' : 'Tocar música';
+    }
+
+    // A API do YouTube chama esta função quando estiver pronta.
+    window.onYouTubeIframeAPIReady = function () {
       player = new YT.Player('yt-player', {
-        height: '0',
-        width: '0',
-        videoId: 'm8eO2E9qO9I', // ID do vídeo da música "BK' - Planos"
+        width: '200',
+        height: '200',
+        videoId: 'dnKzIagMess',
+
         playerVars: {
-          'playsinline': 1,
-          'loop': 1,
-          'playlist': 'm8eO2E9qO9I'
+          autoplay: 1,
+          controls: 0,
+          playsinline: 1,
+          loop: 1,
+          playlist: 'dnKzIagMess',
+          enablejsapi: 1
+        },
+
+        events: {
+          onReady: function (event) {
+            playerReady = true;
+
+            // Tenta iniciar automaticamente com som.
+            // O navegador pode bloquear a reprodução com som.
+            event.target.playVideo();
+          },
+
+          onStateChange: function (event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+              updateAudioButton(true);
+            } else if (
+              event.data === YT.PlayerState.PAUSED ||
+              event.data === YT.PlayerState.ENDED
+            ) {
+              updateAudioButton(false);
+            }
+          },
+
+          onError: function () {
+            updateAudioButton(false);
+          }
         }
       });
-    }
-
-    function startExperience() {
-      document.getElementById('start-overlay').classList.add('hidden');
-      if (player && player.playVideo) {
-        player.playVideo();
-        isPlaying = true;
-      }
-    }
+    };
 
     function toggleAudio() {
-      const statusText = document.getElementById('audio-status');
-      const icon = document.getElementById('audio-icon');
+      if (!playerReady || !player) return;
 
-      if (!player) return;
-
+      // O toque no botão é uma interação do usuário,
+      // permitindo tentar iniciar o áudio novamente.
       if (isPlaying) {
         player.pauseVideo();
-        isPlaying = false;
-        statusText.innerText = "Música pausada";
-        icon.innerText = "🔇";
+        updateAudioButton(false);
       } else {
         player.playVideo();
-        isPlaying = true;
-        statusText.innerText = "BK' - Planos";
-        icon.innerText = "🎵";
+        updateAudioButton(true);
       }
     }
+
+    // Carrega a API oficial do YouTube.
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    tag.async = true;
+
+    document.head.appendChild(tag);
   </script>
+
 </body>
 </html>
